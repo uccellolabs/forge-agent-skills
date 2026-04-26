@@ -70,7 +70,7 @@ forge login --token=your-token-here
 Skills are discovered automatically from `~/.cursor/skills/`. Install with one command:
 
 ```bash
-git clone https://github.com/uccello/forge-agent-skills ~/.cursor/skills/forge-agent-skills
+git clone https://github.com/uccellolabs/forge-agent-skills ~/.cursor/skills/forge-agent-skills
 bash ~/.cursor/skills/forge-agent-skills/install.sh
 ```
 

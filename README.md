@@ -6,60 +6,65 @@ Compatible with **Cursor** (automatic discovery) and **Claude** (Desktop Project
 
 ---
 
-## Skills included
+## What you can say to the agent
 
-| Skill | Description |
-|---|---|
-| [`forge-cli-setup`](./forge-cli-setup/) | Install, authenticate, and configure the Forge CLI |
-| [`forge-cli-servers`](./forge-cli-servers/) | Manage servers — Nginx, PHP, databases, daemons |
-| [`forge-cli-sites`](./forge-cli-sites/) | Deploy sites, manage `.env`, view logs, run commands |
-| [`forge-api-provision`](./forge-api-provision/) | Provision sites, databases, Git repos, and SSL via Forge REST API |
-| [`forge-deploy-automation`](./forge-deploy-automation/) | Full automation — create site + Git + DB + SSL + deploy in one run |
-| [`ovh-dns-forge`](./ovh-dns-forge/) | Configure OVH DNS zones to point to Forge via OVHcloud MCP |
+Once the skills are installed, describe what you want in plain language. The agent picks the right skill and executes the workflow automatically.
+
+### Deploy a site
+
+```
+"Déploie ce projet Laravel sur mon serveur Forge"
+"Provisionnne un nouveau site monsite.com avec base de données et SSL"
+"Crée un site Forge pour ce dossier, lie-le à GitHub et active le SSL"
+"Deploy this Next.js project to Forge on server production"
+```
+
+### Configure DNS
+
+```
+"Configure le DNS sur OVH pour pointer monsite.com vers mon serveur Forge"
+"Crée un enregistrement A pour app.monsite.com sur OVHcloud"
+"Vérifie si le DNS a propagé pour nordvik.uccello.io"
+```
+
+### Manage servers & sites
+
+```
+"Vérifie le statut de Nginx et PHP sur mon serveur Forge"
+"Montre-moi les logs de déploiement de example.com"
+"Redémarre PHP-FPM sur le serveur de production"
+"Lance php artisan migrate sur example.com"
+"Synchronise le fichier .env avec le serveur"
+```
+
+### SSL & Git
+
+```
+"Active le SSL Let's Encrypt sur monsite.com"
+"Crée un dépôt GitHub pour ce projet et lie-le à Forge"
+"Met en place l'auto-deploy sur git push pour ce site"
+```
+
+### Setup & authentication
+
+```
+"Installe et configure la Forge CLI sur ma machine"
+"Connecte-moi à Forge avec mon token API"
+"Configure la clé SSH pour accéder au serveur via Forge"
+```
 
 ---
 
-## Prerequisites
+## Skills included
 
-### Required tools
-
-```bash
-# Laravel Forge CLI
-composer global require laravel/forge-cli
-
-# GitHub CLI (for GitHub-based Git setup)
-brew install gh
-gh auth login
-
-# GitLab CLI (for GitLab-based Git setup)
-brew install glab
-glab auth login
-
-# jq (JSON processing)
-brew install jq
-
-# PHP 8.0+ (required by Forge CLI)
-brew install php
-```
-
-### Required accounts & tokens
-
-| Service | Where to get it |
+| Skill | What the agent can do |
 |---|---|
-| **Forge API Token** | [forge.laravel.com/profile/api](https://forge.laravel.com/profile/api) |
-| **GitHub account** | [github.com](https://github.com) — authenticate via `gh auth login` |
-| **GitLab account** | [gitlab.com](https://gitlab.com) — authenticate via `glab auth login` |
-| **OVHcloud account** | [ovhcloud.com](https://ovhcloud.com) — for DNS management |
-
-### Set your Forge API token
-
-```bash
-# Option A: environment variable (recommended for CI/CD)
-export FORGE_API_TOKEN=your-token-here
-
-# Option B: via the CLI (stores to ~/.laravel-forge/config.json)
-forge login --token=your-token-here
-```
+| [`forge-cli-setup`](./forge-cli-setup/) | Install Forge CLI, authenticate, configure SSH, switch servers |
+| [`forge-cli-servers`](./forge-cli-servers/) | Monitor Nginx/PHP/DB/daemons, view logs, restart services, SSH |
+| [`forge-cli-sites`](./forge-cli-sites/) | Deploy sites, sync `.env`, view logs, run remote commands |
+| [`forge-api-provision`](./forge-api-provision/) | Create sites, databases, link Git repos, issue SSL via Forge API |
+| [`forge-deploy-automation`](./forge-deploy-automation/) | Full automation — site + Git + DB + SSL + deploy in one run |
+| [`ovh-dns-forge`](./ovh-dns-forge/) | Configure OVH DNS zones via OVHcloud MCP |
 
 ---
 
@@ -84,25 +89,22 @@ ln -s ~/.cursor/skills/forge-agent-skills/forge-deploy-automation \
       ~/.cursor/skills/forge-deploy-automation
 ```
 
-Once installed, the agent will automatically read the appropriate skill when you ask it to deploy a site, manage DNS, configure SSL, etc.
+### Claude Desktop
 
-### Claude Desktop (Projects)
-
-1. Open **Claude Desktop** → **Projects** → create a new project (or open an existing one)
+1. Open **Claude Desktop** → **Projects** → create or open a project
 2. Click **Add content** → paste the content of the relevant `SKILL.md` file(s)
 3. The agent will follow the skill instructions within that project
 
-Recommended: add `forge-deploy-automation/SKILL.md` for full coverage, or pick individual skills.
+For full coverage, add `forge-deploy-automation/SKILL.md` + `forge-api-provision/SKILL.md`.
 
 ### Claude Code
 
-Add a reference to the skills from your `CLAUDE.md`:
+Add a reference to the skills in your `CLAUDE.md`:
 
 ```bash
-# From your project root
 cat >> CLAUDE.md << 'EOF'
 
-## Agent Skills
+## Agent Skills — Laravel Forge
 
 For Forge deployments, follow the instructions in:
 - ~/.cursor/skills/forge-agent-skills/forge-deploy-automation/SKILL.md
@@ -111,31 +113,52 @@ For Forge deployments, follow the instructions in:
 EOF
 ```
 
-Or copy the skill content directly into your `CLAUDE.md`.
-
 ---
 
-## Quick start — Deploy a site end-to-end
+## Prerequisites
+
+Install the required tools before using the skills:
 
 ```bash
-# 1. Point DNS to your Forge server (via OVHcloud MCP or manually)
+# Laravel Forge CLI
+composer global require laravel/forge-cli
+forge login --token=your-forge-api-token
 
-# 2. Run the full provisioning script
-bash ~/.cursor/skills/forge-agent-skills/forge-deploy-automation/provision.sh \
-  --domain monsite.com \
-  --local-path /path/to/project \
-  --server-id 12345
+# GitHub CLI (for GitHub-based Git setup)
+brew install gh && gh auth login
 
-# The script handles:
-# ✓ Site creation (Forge API)
-# ✓ Project type detection (Laravel, Symfony, Next.js, static, etc.)
-# ✓ Git repo creation (GitHub or GitLab) + link to Forge
-# ✓ Deployment script generation (adapted to the project type)
-# ✓ Let's Encrypt SSL (mandatory)
-# ✓ Initial deployment
+# GitLab CLI (for GitLab-based Git setup)
+brew install glab && glab auth login
+
+# jq (JSON processing used by automation scripts)
+brew install jq
 ```
 
-Or just describe what you want to the agent — it will pick the right skill automatically.
+### OVHcloud MCP (for DNS management)
+
+Add to `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "ovhcloud": {
+      "url": "https://mcp.eu.ovhcloud.com/mcp",
+      "transport": "http"
+    }
+  }
+}
+```
+
+Restart Cursor — authentication is handled automatically via OAuth2 on first use.
+
+### Required accounts & tokens
+
+| Service | Where to get it |
+|---|---|
+| **Forge API Token** | [forge.laravel.com/profile/api](https://forge.laravel.com/profile/api) |
+| **GitHub** | Authenticate via `gh auth login` |
+| **GitLab** | Authenticate via `glab auth login` |
+| **OVHcloud** | OAuth2 prompt on first MCP call |
 
 ---
 

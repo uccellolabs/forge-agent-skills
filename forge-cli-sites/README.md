@@ -2,18 +2,19 @@
 
 Agent skill — Manage Laravel Forge sites via CLI: deploy, manage environment variables, view logs, run remote commands, use Tinker.
 
-Triggers automatically when you ask to deploy a site, push `.env` vars, check deployment logs, or run artisan commands on Forge.
-
 ---
 
-## Prerequisites
+## What you can say to the agent
 
-- **Forge CLI** installed and authenticated — see [`forge-cli-setup`](../forge-cli-setup/)
-- **SSH key configured** on the target server (required for `forge command`, `forge tinker`, `forge ssh`):
-
-```bash
-forge ssh:configure
-forge ssh:test
+```
+"Déploie example.com sur Forge"
+"Montre-moi les logs du dernier déploiement"
+"Synchronise le fichier .env local avec le serveur"
+"Lance php artisan migrate --force sur example.com"
+"Affiche les logs de l'application en temps réel"
+"Ouvre une session Tinker sur example.com"
+"Redémarre les workers de queue"
+"Vérifie que le déploiement s'est bien passé"
 ```
 
 ---
@@ -44,68 +45,47 @@ bash ~/.cursor/skills/forge-agent-skills/install.sh
 
 ---
 
-## What this skill covers
+## Prerequisites
 
-| Feature | Commands |
-|---|---|
-| **Deploy** | `forge deploy`, `forge deploy example.com` |
-| **Deployment logs** | `forge deploy:logs` |
-| **Environment** | `forge env:pull`, `forge env:push` |
-| **App logs** | `forge site:logs`, `forge site:logs --follow` |
-| **Remote commands** | `forge command example.com --command="php artisan migrate"` |
-| **Tinker** | `forge tinker example.com` |
-| **Dashboard** | `forge open example.com` |
+- **Forge CLI** installed and authenticated — see [`forge-cli-setup`](../forge-cli-setup/)
+- **SSH key configured** (required for `forge command`, `forge tinker`):
+
+```bash
+forge ssh:configure && forge ssh:test
+```
 
 ---
 
-## Quick reference
+## Manual reference
 
 ```bash
-# List all sites on active server
+# List sites
 forge site:list
 
 # Deploy
 forge deploy example.com
 forge deploy:logs
 
-# Sync .env
-forge env:pull example.com          # Download from server
-forge env:push example.com          # Push to server
-forge env:push example.com .env.production
+# Environment variables
+forge env:pull example.com          # download from server
+forge env:push example.com          # push to server
 
-# Stream app logs
+# Application logs
 forge site:logs example.com --follow
 
 # Run remote commands
 forge command example.com --command="php artisan migrate --force"
 forge command example.com --command="php artisan queue:restart"
-
-# Laravel Tinker (interactive REPL)
-forge tinker example.com
-```
-
----
-
-## Common deployment workflow
-
-```bash
-# 1. Target the right server
-forge server:switch production
-
-# 2. Sync environment variables if changed
-forge env:push example.com .env.production
-
-# 3. Deploy
-forge deploy example.com
-
-# 4. Watch deployment output
-forge deploy:logs
-
-# 5. Verify
 forge command example.com --command="php artisan about"
+
+# Tinker (Laravel REPL)
+forge tinker example.com
+
+# Open in Forge dashboard
+forge open example.com
 ```
 
-> After pushing `.env` vars, redeploy if using config cache or queue workers.
+> After pushing `.env`, redeploy if using config cache or queue workers.
 
 ---
 

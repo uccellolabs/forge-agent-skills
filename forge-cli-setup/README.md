@@ -2,36 +2,20 @@
 
 Agent skill — Install, authenticate, and configure the [Laravel Forge CLI](https://github.com/laravel/forge-cli).
 
-Triggers automatically when you ask the agent to install Forge CLI, authenticate, configure SSH, or switch servers.
-
 ---
 
-## Prerequisites
+## What you can say to the agent
 
-### PHP 8.0+
-
-```bash
-# macOS
-brew install php
-
-# Verify
-php --version
+```
+"Installe et configure la Forge CLI sur ma machine"
+"Connecte-moi à Forge avec mon token API"
+"Configure la clé SSH pour accéder au serveur Forge"
+"Sur quel serveur Forge suis-je actuellement ?"
+"Bascule sur le serveur de production"
+"Vérifie que j'ai accès à Forge"
 ```
 
-### Composer (global)
-
-```bash
-# macOS
-brew install composer
-
-# Or via the official installer
-curl -sS https://getcomposer.org/installer | php
-sudo mv composer.phar /usr/local/bin/composer
-```
-
-### Forge API Token
-
-Generate one at: [forge.laravel.com/profile/api](https://forge.laravel.com/profile/api)
+The agent will guide you through installation, authentication, SSH key setup, and server selection automatically.
 
 ---
 
@@ -40,7 +24,6 @@ Generate one at: [forge.laravel.com/profile/api](https://forge.laravel.com/profi
 ### Cursor
 
 ```bash
-# Install this skill only
 ln -s ~/.cursor/skills/forge-agent-skills/forge-cli-setup \
       ~/.cursor/skills/forge-cli-setup
 
@@ -48,53 +31,59 @@ ln -s ~/.cursor/skills/forge-agent-skills/forge-cli-setup \
 bash ~/.cursor/skills/forge-agent-skills/install.sh
 ```
 
-Once installed, the agent reads this skill automatically when you mention `forge login`, `forge cli`, `FORGE_API_TOKEN`, or first-time setup.
-
 ### Claude Desktop
 
 1. Open a Claude Project → **Add content**
 2. Paste the content of [`SKILL.md`](./SKILL.md)
-3. The agent will follow the setup instructions in that project
 
 ### Claude Code
 
-Add to your `CLAUDE.md`:
-
 ```markdown
 ## Forge CLI Setup
-For Forge CLI installation and authentication, follow:
 ~/.cursor/skills/forge-agent-skills/forge-cli-setup/SKILL.md
 ```
 
 ---
 
-## What this skill covers
+## Prerequisites
 
-- **Installation** — `composer global require laravel/forge-cli`
-- **Authentication** — `forge login`, `forge login --token`, `FORGE_API_TOKEN`
-- **SSH configuration** — `forge ssh:configure`, `forge ssh:test`
-- **Server selection** — `forge server:list`, `forge server:switch`
-- **Global CLI options** — non-interactive mode, verbosity, quiet mode
+### PHP 8.0+
+
+```bash
+brew install php
+php --version
+```
+
+### Composer
+
+```bash
+brew install composer
+```
+
+### Forge API Token
+
+Generate at: [forge.laravel.com/profile/api](https://forge.laravel.com/profile/api)
 
 ---
 
-## Quick reference
+## Manual reference
 
 ```bash
-# Install
+# Install Forge CLI
 composer global require laravel/forge-cli
 
 # Authenticate
 forge login --token=your-api-token
 
-# Configure SSH
+# Configure SSH key on server
 forge ssh:configure
+forge ssh:test
 
 # Switch server
+forge server:list
 forge server:switch production
 
-# Verify
-forge server:list
+# Verify everything works
 forge site:list
 ```
 

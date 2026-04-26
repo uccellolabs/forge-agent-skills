@@ -2,36 +2,22 @@
 
 Agent skill — Provision Laravel Forge resources via REST API: create sites, databases, link Git repositories, issue SSL certificates, update deployment scripts.
 
-Triggers automatically when you ask to create a Forge site, set up a database, configure SSL, install a Git repo, or automate anything beyond what the Forge CLI supports.
-
-> The Forge CLI only manages existing resources. **Creating** sites, databases, SSL certificates, and Git links requires the Forge API — this skill handles that.
+> The Forge CLI only manages existing resources. **Creating** sites, databases, SSL certificates, and Git links requires the Forge API — this skill covers that.
 
 ---
 
-## Prerequisites
+## What you can say to the agent
 
-### Forge API Token
-
-Generate at: [forge.laravel.com/profile/api](https://forge.laravel.com/profile/api)
-
-```bash
-# Set in your environment
-export FORGE_API_TOKEN=your-token-here
-
-# Or it is read automatically from ~/.laravel-forge/config.json
-# if you have authenticated via the Forge CLI
-forge login --token=your-token-here
 ```
-
-### jq
-
-```bash
-brew install jq
+"Crée un nouveau site monsite.com sur mon serveur Forge"
+"Ajoute une base de données MySQL monsite_db sur le serveur"
+"Lie le dépôt GitHub username/repo à ce site Forge"
+"Active le SSL Let's Encrypt sur example.com"
+"Met à jour le script de déploiement pour example.com"
+"Active l'auto-deploy sur git push pour ce site"
+"Déclenche un déploiement manuel sur example.com"
+"Pousse le fichier .env.production sur le serveur"
 ```
-
-### curl
-
-Pre-installed on macOS and most Linux distributions.
 
 ---
 
@@ -61,9 +47,31 @@ bash ~/.cursor/skills/forge-agent-skills/install.sh
 
 ---
 
-## What this skill covers
+## Prerequisites
 
-| Operation | API endpoint |
+### Forge API Token
+
+```bash
+# Set in environment
+export FORGE_API_TOKEN=your-token-here
+
+# Or authenticate via CLI (token stored in ~/.laravel-forge/config.json)
+forge login --token=your-token-here
+```
+
+Generate at: [forge.laravel.com/profile/api](https://forge.laravel.com/profile/api)
+
+### jq
+
+```bash
+brew install jq
+```
+
+---
+
+## API operations covered
+
+| Operation | Endpoint |
 |---|---|
 | List servers | `GET /servers` |
 | Create site | `POST /servers/{id}/sites` |
@@ -77,23 +85,29 @@ bash ~/.cursor/skills/forge-agent-skills/install.sh
 
 ---
 
-## Quick reference
+## Manual reference
 
 ```bash
-# Get your server ID
+# Get server ID
 curl -s -H "Authorization: Bearer $FORGE_API_TOKEN" \
      -H "Accept: application/json" \
      https://forge.laravel.com/api/v1/servers | jq '.servers[] | {id, name}'
 
-# Create a site
+# Create site
 curl -s -X POST \
   -H "Authorization: Bearer $FORGE_API_TOKEN" \
-  -H "Accept: application/json" \
-  -H "Content-Type: application/json" \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
   https://forge.laravel.com/api/v1/servers/$SERVER_ID/sites \
-  -d '{"domain": "monsite.com", "project_type": "php", "directory": "/public", "php_version": "php83"}'
+  -d '{"domain":"monsite.com","project_type":"php","directory":"/public","php_version":"php83"}'
 
-# Trigger a deployment
+# Issue SSL certificate
+curl -s -X POST \
+  -H "Authorization: Bearer $FORGE_API_TOKEN" \
+  -H "Accept: application/json" -H "Content-Type: application/json" \
+  https://forge.laravel.com/api/v1/servers/$SERVER_ID/sites/$SITE_ID/certificates/letsencrypt \
+  -d '{"domains":["monsite.com","www.monsite.com"]}'
+
+# Trigger deploy
 curl -s -X POST \
   -H "Authorization: Bearer $FORGE_API_TOKEN" \
   -H "Accept: application/json" \
@@ -102,28 +116,7 @@ curl -s -X POST \
 
 **project_type**: `php` (Laravel, Symfony, WordPress) or `html` (static, Next.js, Nuxt.js, Node.js)
 
----
-
-## SSL is mandatory
-
-Every site must have a Let's Encrypt certificate. The API call:
-
-```bash
-curl -s -X POST \
-  -H "Authorization: Bearer $FORGE_API_TOKEN" \
-  -H "Accept: application/json" \
-  -H "Content-Type: application/json" \
-  https://forge.laravel.com/api/v1/servers/$SERVER_ID/sites/$SITE_ID/certificates/letsencrypt \
-  -d '{"domains": ["monsite.com", "www.monsite.com"]}'
-```
-
-DNS must be propagated before requesting the certificate.
-
----
-
-## API reference
-
-Full documentation: [forge.laravel.com/api-documentation](https://forge.laravel.com/api-documentation)
+Full API docs: [forge.laravel.com/api-documentation](https://forge.laravel.com/api-documentation)
 
 ---
 

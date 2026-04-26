@@ -1,54 +1,25 @@
 # forge-deploy-automation
 
-Agent skill — Automate the complete Laravel Forge site lifecycle: create site, set up Git (GitHub or GitLab), create database, configure deployment script, enable SSL, and trigger the first deploy — all in one run.
+Agent skill — Automate the complete Laravel Forge site lifecycle: create site, set up Git (GitHub or GitLab), create database, configure deployment script, enable SSL, and trigger the first deploy.
 
 **Rule: never rsync. All deployments go through Git.**
 
-Triggers automatically when you ask to deploy a site to Forge, create a GitHub/GitLab repo for a project, set up CI/CD with auto-deploy on push, or automate the full site provisioning workflow.
-
 ---
 
-## Prerequisites
+## What you can say to the agent
 
-### Required tools
-
-```bash
-# Laravel Forge CLI
-composer global require laravel/forge-cli
-forge login --token=your-forge-api-token
-
-# GitHub CLI (if using GitHub)
-brew install gh
-gh auth login
-
-# GitLab CLI (if using GitLab)
-brew install glab
-glab auth login
-
-# jq
-brew install jq
-
-# Python 3 (for JSON parsing in scripts — pre-installed on macOS)
-python3 --version
+```
+"Déploie ce projet sur mon serveur Forge"
+"Provisionnne un nouveau site monsite.com avec base de données et SSL"
+"Crée le dépôt GitHub pour ce projet et lie-le à Forge"
+"Met en place l'auto-deploy sur git push pour monsite.com"
+"Ce projet n'est pas encore sur Git, crée un dépôt GitLab et déploie-le"
+"Configure le déploiement complet pour ce projet Laravel"
+"Ajoute le SSL sur monsite.com"
+"Deploy this static site to Forge with Let's Encrypt"
 ```
 
-### Forge API Token
-
-```bash
-# Option A: environment variable
-export FORGE_API_TOKEN=your-token-here
-
-# Option B: via Forge CLI (stored in ~/.laravel-forge/config.json)
-forge login --token=your-token-here
-```
-
-Generate at: [forge.laravel.com/profile/api](https://forge.laravel.com/profile/api)
-
-### DNS pre-configured
-
-The domain must resolve to your Forge server's IP **before** running the provisioning script (Let's Encrypt requires DNS to be live).
-
-Use the [`ovh-dns-forge`](../ovh-dns-forge/) skill to set up DNS if your domain is on OVHcloud.
+The agent detects the project type automatically (Laravel, Symfony, WordPress, Next.js, Nuxt.js, Node.js, static HTML) and generates an appropriate deployment script.
 
 ---
 
@@ -78,6 +49,45 @@ bash ~/.cursor/skills/forge-agent-skills/install.sh
 
 ---
 
+## Prerequisites
+
+```bash
+# Forge CLI
+composer global require laravel/forge-cli
+forge login --token=your-forge-api-token
+
+# GitHub CLI
+brew install gh && gh auth login
+
+# GitLab CLI
+brew install glab && glab auth login
+
+# jq
+brew install jq
+```
+
+DNS must point to your Forge server before SSL can be issued.
+Use [`ovh-dns-forge`](../ovh-dns-forge/) to configure DNS if your domain is on OVHcloud.
+
+---
+
+## Automatic project type detection
+
+| Detected signal | Type | Deployment script |
+|---|---|---|
+| `artisan` | Laravel | composer + migrate + cache + FPM reload |
+| `symfony.lock` / `bin/console` | Symfony | composer + doctrine migrate + cache:clear |
+| `wp-login.php` | WordPress | composer + FPM reload |
+| `next.config.*` | Next.js | npm ci + build + pm2 |
+| `nuxt.config.*` | Nuxt.js | npm ci + build + pm2 |
+| `package.json` | Node.js | npm ci + pm2 |
+| `index.html` | Static | git pull only |
+| `composer.json` | PHP generic | composer + FPM reload |
+
+Override detection with `--type laravel` (or `symfony`, `nextjs`, `static`, etc.).
+
+---
+
 ## Scripts included
 
 | Script | Purpose |
@@ -88,86 +98,34 @@ bash ~/.cursor/skills/forge-agent-skills/install.sh
 
 ---
 
-## Usage
-
-### Full provisioning (from local folder)
-
-The script detects the project type automatically (Laravel, Symfony, WordPress, Next.js, Nuxt.js, Node.js, static HTML) and generates an appropriate deployment script.
+## Manual reference
 
 ```bash
-bash ~/.cursor/skills/forge-agent-skills/forge-deploy-automation/provision.sh \
+# Full provisioning from a local folder (agent creates GitHub/GitLab repo)
+bash provision.sh \
   --domain monsite.com \
   --local-path /path/to/project \
   --server-id 12345
-```
 
-### Full provisioning (existing Git repo)
-
-```bash
-bash ~/.cursor/skills/forge-agent-skills/forge-deploy-automation/provision.sh \
+# Full provisioning with existing Git repo
+bash provision.sh \
   --domain monsite.com \
   --repo username/repo-name \
   --branch main \
   --server-id 12345
-```
 
-### With database
-
-```bash
-bash ~/.cursor/skills/forge-agent-skills/forge-deploy-automation/provision.sh \
+# With database
+bash provision.sh \
   --domain monsite.com \
   --local-path /path/to/project \
   --server-id 12345 \
-  --db monsite_db \
-  --db-user monsite_user \
-  --db-pass secret
-```
+  --db monsite_db --db-user monsite_user --db-pass secret
 
-### Git setup only (site already exists on Forge)
+# Git setup only (site already exists)
+bash git-setup.sh --site monsite.com
 
-```bash
-cd /my/project
-bash ~/.cursor/skills/forge-agent-skills/forge-deploy-automation/git-setup.sh \
-  --site monsite.com
-```
-
-### SSL only (site already created)
-
-```bash
-bash ~/.cursor/skills/forge-agent-skills/forge-deploy-automation/ssl.sh \
-  --site monsite.com
-```
-
----
-
-## Automatic project type detection
-
-| Detected signal | Forge type | Deployment generated |
-|---|---|---|
-| `artisan` | `php` | `git pull` + composer + artisan migrate + cache + FPM reload |
-| `symfony.lock` / `bin/console` | `php` | composer + doctrine migrate + cache:clear + FPM reload |
-| `wp-login.php` | `php` | composer + FPM reload |
-| `next.config.*` | `html` | npm ci + build + pm2 |
-| `nuxt.config.*` | `html` | npm ci + build + pm2 |
-| `package.json` | `html` | npm ci + pm2 |
-| `index.html` | `html` | git pull only |
-| `composer.json` | `php` | composer + FPM reload |
-
-Override with `--type laravel` (or `symfony`, `nextjs`, `static`, etc.).
-
----
-
-## Full provisioning workflow
-
-```
-1. Create Forge site (API)
-2. Create database (optional)
-3. Set up Git
-   ├─ --repo provided  → link directly to Forge
-   └─ --local-path     → git init + create remote (GitHub/GitLab) + push + link
-4. Configure deployment script (adapted to project type)
-5. SSL — Let's Encrypt (mandatory)
-6. First deployment
+# SSL only (site already exists)
+bash ssl.sh --site monsite.com
 ```
 
 ---
@@ -175,12 +133,12 @@ Override with `--type laravel` (or `symfony`, `nextjs`, `static`, etc.).
 ## Validation checklist
 
 ```
-- [ ] forge site:list shows the new site
+- [ ] forge site:list → new site appears
 - [ ] GitHub/GitLab repo exists and is linked
 - [ ] git push → auto-deploy triggered
-- [ ] curl -sI http://monsite.com  → 301 to HTTPS
+- [ ] curl -sI http://monsite.com  → 301 HTTPS
 - [ ] curl -sI https://monsite.com → HTTP/2 200
-- [ ] forge deploy:logs — success
+- [ ] forge deploy:logs           → success
 ```
 
 ---

@@ -7,14 +7,14 @@ Agent skill — Manage Laravel Forge sites via CLI: deploy, manage environment v
 ## What you can say to the agent
 
 ```
-"Déploie example.com sur Forge"
-"Montre-moi les logs du dernier déploiement"
-"Synchronise le fichier .env local avec le serveur"
-"Lance php artisan migrate --force sur example.com"
-"Affiche les logs de l'application en temps réel"
-"Ouvre une session Tinker sur example.com"
-"Redémarre les workers de queue"
-"Vérifie que le déploiement s'est bien passé"
+"Deploy example.com on Forge"
+"Show me the last deployment logs"
+"Sync the local .env file with the server"
+"Run php artisan migrate --force on example.com"
+"Stream the application logs in real time"
+"Open a Tinker session on example.com"
+"Restart the queue workers"
+"Check that the deployment succeeded"
 ```
 
 ---

@@ -9,13 +9,13 @@ Agent skill — Automate the complete Laravel Forge site lifecycle: create site,
 ## What you can say to the agent
 
 ```
-"Déploie ce projet sur mon serveur Forge"
-"Provisionnne un nouveau site monsite.com avec base de données et SSL"
-"Crée le dépôt GitHub pour ce projet et lie-le à Forge"
-"Met en place l'auto-deploy sur git push pour monsite.com"
-"Ce projet n'est pas encore sur Git, crée un dépôt GitLab et déploie-le"
-"Configure le déploiement complet pour ce projet Laravel"
-"Ajoute le SSL sur monsite.com"
+"Deploy this project to my Forge server"
+"Provision a new site monsite.com with a database and SSL"
+"Create a GitHub repo for this project and link it to Forge"
+"Set up auto-deploy on git push for monsite.com"
+"This project is not on Git yet, create a GitLab repo and deploy it"
+"Set up the full deployment pipeline for this Laravel project"
+"Add SSL to monsite.com"
 "Deploy this static site to Forge with Let's Encrypt"
 ```
 

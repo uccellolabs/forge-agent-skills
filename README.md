@@ -13,44 +13,44 @@ Once the skills are installed, describe what you want in plain language. The age
 ### Deploy a site
 
 ```
-"Déploie ce projet Laravel sur mon serveur Forge"
-"Provisionnne un nouveau site monsite.com avec base de données et SSL"
-"Crée un site Forge pour ce dossier, lie-le à GitHub et active le SSL"
-"Deploy this Next.js project to Forge on server production"
+"Deploy this Laravel project to my Forge server"
+"Provision a new site monsite.com with a database and SSL"
+"Create a Forge site for this folder, link it to GitHub and enable SSL"
+"Deploy this Next.js project to Forge on the production server"
 ```
 
 ### Configure DNS
 
 ```
-"Configure le DNS sur OVH pour pointer monsite.com vers mon serveur Forge"
-"Crée un enregistrement A pour app.monsite.com sur OVHcloud"
-"Vérifie si le DNS a propagé pour nordvik.uccello.io"
+"Configure DNS on OVH to point monsite.com to my Forge server"
+"Create an A record for app.monsite.com on OVHcloud"
+"Check if DNS has propagated for nordvik.uccello.io"
 ```
 
 ### Manage servers & sites
 
 ```
-"Vérifie le statut de Nginx et PHP sur mon serveur Forge"
-"Montre-moi les logs de déploiement de example.com"
-"Redémarre PHP-FPM sur le serveur de production"
-"Lance php artisan migrate sur example.com"
-"Synchronise le fichier .env avec le serveur"
+"Check Nginx and PHP status on my Forge server"
+"Show me the deployment logs for example.com"
+"Restart PHP-FPM on the production server"
+"Run php artisan migrate on example.com"
+"Sync the .env file with the server"
 ```
 
 ### SSL & Git
 
 ```
-"Active le SSL Let's Encrypt sur monsite.com"
-"Crée un dépôt GitHub pour ce projet et lie-le à Forge"
-"Met en place l'auto-deploy sur git push pour ce site"
+"Enable Let's Encrypt SSL on monsite.com"
+"Create a GitHub repo for this project and link it to Forge"
+"Set up auto-deploy on git push for this site"
 ```
 
 ### Setup & authentication
 
 ```
-"Installe et configure la Forge CLI sur ma machine"
-"Connecte-moi à Forge avec mon token API"
-"Configure la clé SSH pour accéder au serveur via Forge"
+"Install and configure the Forge CLI on my machine"
+"Authenticate me to Forge with my API token"
+"Configure the SSH key to access the Forge server"
 ```
 
 ---

@@ -7,12 +7,12 @@ Agent skill — Install, authenticate, and configure the [Laravel Forge CLI](htt
 ## What you can say to the agent
 
 ```
-"Installe et configure la Forge CLI sur ma machine"
-"Connecte-moi à Forge avec mon token API"
-"Configure la clé SSH pour accéder au serveur Forge"
-"Sur quel serveur Forge suis-je actuellement ?"
-"Bascule sur le serveur de production"
-"Vérifie que j'ai accès à Forge"
+"Install and configure the Forge CLI on my machine"
+"Authenticate me to Forge with my API token"
+"Configure the SSH key to access the Forge server"
+"Which Forge server am I currently on?"
+"Switch to the production server"
+"Verify that I have access to Forge"
 ```
 
 The agent will guide you through installation, authentication, SSH key setup, and server selection automatically.

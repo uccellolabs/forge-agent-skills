@@ -7,14 +7,14 @@ Agent skill — Manage Laravel Forge servers via CLI: monitor resources, view lo
 ## What you can say to the agent
 
 ```
-"Vérifie le statut de Nginx sur mon serveur Forge"
-"Montre-moi les logs PHP en temps réel"
-"Redémarre PHP-FPM sur le serveur de production"
-"Est-ce que la base de données tourne correctement ?"
-"Affiche les logs d'erreur Nginx"
-"Connecte-moi en SSH au serveur"
-"Ouvre un shell MySQL sur la base de données my_db"
-"Mon daemon queue est tombé, redémarre-le"
+"Check Nginx status on my Forge server"
+"Show me the PHP logs in real time"
+"Restart PHP-FPM on the production server"
+"Is the database running correctly?"
+"Show the Nginx error logs"
+"Connect me via SSH to the server"
+"Open a MySQL shell on the my_db database"
+"My queue daemon is down, restart it"
 ```
 
 The agent checks service health, streams logs, restarts what's needed, and connects via SSH without you needing to remember any command.

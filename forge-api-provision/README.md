@@ -9,14 +9,14 @@ Agent skill — Provision Laravel Forge resources via REST API: create sites, da
 ## What you can say to the agent
 
 ```
-"Crée un nouveau site monsite.com sur mon serveur Forge"
-"Ajoute une base de données MySQL monsite_db sur le serveur"
-"Lie le dépôt GitHub username/repo à ce site Forge"
-"Active le SSL Let's Encrypt sur example.com"
-"Met à jour le script de déploiement pour example.com"
-"Active l'auto-deploy sur git push pour ce site"
-"Déclenche un déploiement manuel sur example.com"
-"Pousse le fichier .env.production sur le serveur"
+"Create a new site monsite.com on my Forge server"
+"Add a MySQL database monsite_db on the server"
+"Link the GitHub repo username/repo to this Forge site"
+"Enable Let's Encrypt SSL on example.com"
+"Update the deployment script for example.com"
+"Enable auto-deploy on git push for this site"
+"Trigger a manual deployment on example.com"
+"Push the .env.production file to the server"
 ```
 
 ---

@@ -7,12 +7,12 @@ Agent skill — Configure OVHcloud DNS zones to point a domain to a Laravel Forg
 ## What you can say to the agent
 
 ```
-"Configure le DNS sur OVH pour pointer monsite.com vers mon serveur Forge"
-"Crée un enregistrement A pour app.monsite.com avec l'IP 1.2.3.4"
-"Ajoute aussi l'enregistrement www"
-"Vérifie si le DNS a propagé pour nordvik.uccello.io"
-"Rafraîchis la zone DNS OVH pour uccello.io"
-"Quels enregistrements DNS existent pour monsite.com sur OVH ?"
+"Configure DNS on OVH to point monsite.com to my Forge server"
+"Create an A record for app.monsite.com with IP 1.2.3.4"
+"Also add the www record"
+"Check if DNS has propagated for nordvik.uccello.io"
+"Refresh the OVH DNS zone for uccello.io"
+"What DNS records exist for monsite.com on OVH?"
 ```
 
 The agent retrieves the server IP from Forge, creates or updates the DNS records on OVH, refreshes the zone, and verifies propagation — without you needing to touch the OVH Control Panel.
